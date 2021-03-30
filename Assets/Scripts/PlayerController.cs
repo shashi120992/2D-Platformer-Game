@@ -6,11 +6,14 @@ public class PlayerController : MonoBehaviour
 {
     public Animator animator; //for animation
     public float speed;        // for running
+    public float jump;
+    private Rigidbody2D rb2d;  // for jump 
    
     //Calling awake function
     private void Awake()
     {
         Debug.Log("Awake called");
+        rb2d = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // deteting collition
@@ -21,14 +24,14 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
-
+        float Vertical = Input.GetAxisRaw("Jump");
 
         //running Player by isBoolen
 
         //Controlling speed through arrow buttons
 
-        movecharector(horizontal);
-        playhorizontal(horizontal);
+        movecharector(horizontal, Vertical);
+        playhorizontal(horizontal, Vertical);
 
         //crouching animation
         // animator.SetBool("isCrouch")
@@ -37,19 +40,30 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isCrouch", false);
 
         }
-        else animator.SetBool("isCrouch", true);
+        else
+        {
+            animator.SetBool("isCrouch", true);
+        }  
         //box collieder changer
 
     }
 
-    private void movecharector(float horizontal)
+    private void movecharector(float horizontal, float Vertical)
     {
+       //move charector horizontally
         Vector3 position = transform.position;
         position.x = position.x + horizontal * speed * Time.deltaTime;
         transform.position = position;
+
+        // move charector vertically
+        if (Vertical>0)
+        {
+            rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
+        }
+
     }
 
-    private void playhorizontal(float horizontal)
+    private void playhorizontal(float horizontal, float Vertical)
     {
         animator.SetFloat("Speed", Mathf.Abs(horizontal)); //changing speed to abs
 
@@ -63,5 +77,17 @@ public class PlayerController : MonoBehaviour
             scale.x = Mathf.Abs(horizontal);
         }
         transform.localScale = scale;
+
+        //Jump animation
+        
+        if(Vertical>0)
+        {
+            animator.SetBool("Jump", true);
+        }
+        else
+        {
+            animator.SetBool("Jump", false);
+        }
+            
     }
 }
