@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Animator animator;
+    public Animator animator; //for animation
+    public float speed;        // for running
    
     //Calling awake function
     private void Awake()
@@ -19,18 +20,47 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        //Controlling speed through arrow buttons
-        float speed = Input.GetAxisRaw("Horizontal");
-        animator.SetFloat("Speed",Mathf.Abs(speed)); //changing speed to abs
+        float horizontal = Input.GetAxisRaw("Horizontal");
 
-        Vector3 scale = transform.localScale; 
-        if (speed<0) 
+
+        //running Player by isBoolen
+
+        //Controlling speed through arrow buttons
+
+        movecharector(horizontal);
+        playhorizontal(horizontal);
+
+        //crouching animation
+        // animator.SetBool("isCrouch")
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-           scale.x = -1f * Mathf.Abs(scale.x); // changig speed to abs
+            animator.SetBool("isCrouch", false);
+
         }
-        else if (speed > 0)
+        else animator.SetBool("isCrouch", true);
+        //box collieder changer
+
+    }
+
+    private void movecharector(float horizontal)
+    {
+        Vector3 position = transform.position;
+        position.x = position.x + horizontal * speed * Time.deltaTime;
+        transform.position = position;
+    }
+
+    private void playhorizontal(float horizontal)
+    {
+        animator.SetFloat("Speed", Mathf.Abs(horizontal)); //changing speed to abs
+
+        Vector3 scale = transform.localScale;
+        if (horizontal < 0)
         {
-            scale.x = Mathf.Abs(speed);
+            scale.x = -1f * Mathf.Abs(scale.x); // changig speed to abs
+        }
+        else if (horizontal > 0)
+        {
+            scale.x = Mathf.Abs(horizontal);
         }
         transform.localScale = scale;
     }
