@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public Animator animator; //for animation
     public float speed;        // for running
     public float jump;
+    private bool onGround;
     private Rigidbody2D rb2d;  // for jump 
    
     //Calling awake function
@@ -32,9 +31,15 @@ public class PlayerController : MonoBehaviour
 
         movecharector(horizontal, Vertical);
         playhorizontal(horizontal, Vertical);
+        Crouch();
+        //box collieder changer
 
+    }
+
+    private void Crouch()
+    {
         //crouching animation
-        // animator.SetBool("isCrouch")
+     
         if (Input.GetKey(KeyCode.LeftControl))
         {
             animator.SetBool("isCrouch", false);
@@ -43,9 +48,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetBool("isCrouch", true);
-        }  
-        //box collieder changer
-
+        }
     }
 
     private void movecharector(float horizontal, float Vertical)
@@ -56,12 +59,35 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
 
         // move charector vertically
-        if (Vertical>0)
-        {
+        if (Vertical > 0)
+        //if (Vertical > 0 & onGround)
+         {
+            //onGround = false;
             rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
         }
-
+        
     }
+   
+    //-------------------------------------------------------------------------------
+    //Not Working
+    //
+    //to compare ground while jumping
+    //private void OncollisionEnterEnter2D(Collision2D collision)
+    // {
+    //    if(collision.gameObject.CompareTag("Ground"))
+    //    {
+    //        onGround = true;
+    //    }
+    //}
+
+   // private void OnCollisionExit2D(Collision2D collision)
+   // {
+   //    if (collision.gameObject.CompareTag("Ground"))
+   //     {
+   //         onGround = false;
+   //     }
+   // }
+   //---------------------------------------------------------------------------------
 
     private void playhorizontal(float horizontal, float Vertical)
     {
@@ -78,7 +104,7 @@ public class PlayerController : MonoBehaviour
         }
         transform.localScale = scale;
 
-        //Jump animation
+        //Jump animation   (To be moved to new void)
         
         if(Vertical>0)
         {
