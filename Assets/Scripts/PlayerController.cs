@@ -1,13 +1,38 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+
+    public Scorecontroller scorecontroller;
     public Animator animator; //for animation
     public float speed;        // for running
     public float jump;
+    public float jumpForce;
+    public int buildIndex;
+
+
+
     private bool onGround;
     private Rigidbody2D rb2d;  // for jump 
-   
+
+    public void killPlayer()
+    {
+        Debug.Log("Player Killed By Enemy");
+        //Destroy(gameObject);
+        //Play Death animation
+        animator.SetBool("Death", true);
+
+        //Reset entire level
+        reloadLevel();
+    }
+
+    private void reloadLevel()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     //Calling awake function
     private void Awake()
     {
@@ -15,11 +40,15 @@ public class PlayerController : MonoBehaviour
         rb2d = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    // deteting collition
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void getKey()
     {
-        Debug.Log("Colission: + " + collision.gameObject.name);
+        Debug.Log("player Picked the Key");
+        scorecontroller.increaseScore(100);
+       
     }
+
+    // deteting collition
+
     private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -29,8 +58,9 @@ public class PlayerController : MonoBehaviour
 
         //Controlling speed through arrow buttons
 
-        movecharector(horizontal, Vertical);
+        RunAnim(horizontal);
         playhorizontal(horizontal, Vertical);
+        JumpAnim(Vertical);
         Crouch();
         //box collieder changer
 
@@ -39,7 +69,7 @@ public class PlayerController : MonoBehaviour
     private void Crouch()
     {
         //crouching animation
-     
+
         if (Input.GetKey(KeyCode.LeftControl))
         {
             animator.SetBool("isCrouch", false);
@@ -51,43 +81,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void movecharector(float horizontal, float Vertical)
+    private void RunAnim(float horizontal)
     {
-       //move charector horizontally
+        //move charector horizontally
         Vector3 position = transform.position;
-        position.x = position.x + horizontal * speed * Time.deltaTime;
+        position.x += horizontal * speed * Time.deltaTime;
         transform.position = position;
 
-        // move charector vertically
-        if (Vertical > 0)
-        //if (Vertical > 0 & onGround)
-         {
-            //onGround = false;
-            rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
+        //checking if player felldown
+        if (position.y < -7.5)
+        {
+            SceneManager.LoadScene(buildIndex);
         }
-        
-    }
-   
-    //-------------------------------------------------------------------------------
-    //Not Working
-    //
-    //to compare ground while jumping
-    //private void OncollisionEnterEnter2D(Collision2D collision)
-    // {
-    //    if(collision.gameObject.CompareTag("Ground"))
-    //    {
-    //        onGround = true;
-    //    }
-    //}
 
-   // private void OnCollisionExit2D(Collision2D collision)
-   // {
-   //    if (collision.gameObject.CompareTag("Ground"))
-   //     {
-   //         onGround = false;
-   //     }
-   // }
-   //---------------------------------------------------------------------------------
+
+
+    }
+
 
     private void playhorizontal(float horizontal, float Vertical)
     {
@@ -104,16 +114,48 @@ public class PlayerController : MonoBehaviour
         }
         transform.localScale = scale;
 
-        //Jump animation   (To be moved to new void)
-        
-        if(Vertical>0)
+    }
+    // Jump Animatuon
+    private void JumpAnim(float Vertical)
+    {
+        if (Vertical > 0 && onGround)
         {
             animator.SetBool("Jump", true);
+            Jump();
         }
         else
         {
             animator.SetBool("Jump", false);
         }
-            
+
     }
+    void Jump()
+    {
+        //rb2d.velocity = Vector2.up * jumpForce;
+        onGround = false;
+        rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
+    }
+
+
+   
+    //to compare ground while jumping
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            onGround = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            onGround = false;
+        }
+    }
+
+
+
+
 }

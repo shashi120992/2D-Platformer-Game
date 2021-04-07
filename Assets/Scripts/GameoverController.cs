@@ -1,20 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameoverController : MonoBehaviour
 {
-    public Vector3 startPosition;
-
-    private void Awake()
+public int buildIndex;
+    public void OnTriggerEnter2D(Collider2D collision)
     {
-        startPosition = transform.position;
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        //Level is Over
         if (collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            transform.position = startPosition;
-            print("Game Over");
+            Debug.Log("Level Completed");
+            SceneManager.LoadScene(buildIndex);
         }
+
     }
 }
