@@ -1,16 +1,28 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameoverController : MonoBehaviour
 {
-public int buildIndex;
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.GetComponent<PlayerController>() != null)
-        {
-            Debug.Log("Level Completed");
-            SceneManager.LoadScene(buildIndex);
-        }
+    public Button buttonrestart;
 
+    private void Awake()
+    {
+        buttonClick();
+    }
+
+    private void buttonClick()
+    {
+        buttonrestart.onClick.AddListener(reloadLevel);
+    }
+
+    public void playerdied()
+    {
+        gameObject.SetActive(true);
+    }
+
+    private void reloadLevel()
+    {
+        SceneManager.LoadScene(1);
     }
 }

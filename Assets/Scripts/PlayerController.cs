@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
 
     public Scorecontroller scorecontroller;
+    public GameoverController gameoverController;
+
     public Animator animator; //for animation
     public float speed;        // for running
     public float jump;
@@ -23,15 +25,13 @@ public class PlayerController : MonoBehaviour
         //Destroy(gameObject);
         //Play Death animation
         animator.SetBool("Death", true);
+        gameoverController.playerdied();
 
         //Reset entire level
-        reloadLevel();
+        //reloadLevel();
     }
 
-    private void reloadLevel()
-    {
-        SceneManager.LoadScene(0);
-    }
+   
 
     //Calling awake function
     private void Awake()
