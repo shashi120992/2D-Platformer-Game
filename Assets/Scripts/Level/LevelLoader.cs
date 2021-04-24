@@ -10,7 +10,7 @@ namespace Assets.Scripts.Level
     public class LevelLoader : MonoBehaviour
     {
         private Button button;
-        public string levelName;
+        public string LevelName;
 
         private void Awake()
         {
@@ -20,7 +20,23 @@ namespace Assets.Scripts.Level
 
         private void onClick()
         {
-            SceneManager.LoadScene(levelName); 
+            LevelStatus levelStatus = levelManager.Instance.GetLevelStatus(LevelName);
+            switch (levelStatus)
+            {
+                case LevelStatus.Locked:
+                    Debug.Log("Cant play level till you unlok It");
+                break;
+
+                case LevelStatus.Unlocked:
+                    SceneManager.LoadScene(LevelName);
+                    break;
+
+                case LevelStatus.Complited:
+                    SceneManager.LoadScene(LevelName);     // To Collect Extra Points
+                    break;
+            }
+
+             
         }
     }
 }

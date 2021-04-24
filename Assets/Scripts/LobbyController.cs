@@ -12,6 +12,7 @@ public class LobbyController : MonoBehaviour
     private void Awake()
     {
         Buttonplay.onClick.AddListener(playGame);
+       
 
     }
 
@@ -19,7 +20,6 @@ public class LobbyController : MonoBehaviour
     {
         //SceneManager.LoadScene(1);
         levelSelection.SetActive(true);
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.buildIndex);
+        Debug.Log("Start Button Clicked");
     }
 }

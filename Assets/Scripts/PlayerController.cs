@@ -1,38 +1,33 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
-
+    //-----------Public Variables--------------------------------------------------------------------------------------------------------------
     public Scorecontroller scorecontroller;
     public GameoverController gameoverController;
+    public keyCountScript keyCount;
 
-    public Animator animator; //for animation
-    public float speed;        // for running
+    public Animator animator;                                                   //for animation
+    public float speed;                                                         // for running
     public float jump;
-    public float jumpForce;
     public int buildIndex;
+    
+
+    //-----------------Private VAriables  [SerializeField] ------------------------------------------------------------------------------------
+
+    [SerializeField] private float m_JumpForce = 100f;							// Amount of force added when the player jumps.
+   // [Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
+    //[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
+    [SerializeField] private bool onGround;                                     // Checks Player is on Ground or Not
 
 
 
-    private bool onGround;
+    //--------Private Variables---------------------------------------------------------------------------------------------------------------
     private Rigidbody2D rb2d;  // for jump 
 
-    public void killPlayer()
-    {
-        Debug.Log("Player Killed By Enemy");
-        //Destroy(gameObject);
-        //Play Death animation
-        animator.SetBool("Death", true);
-        gameoverController.playerdied();
-
-        //Reset entire level
-        //reloadLevel();
-    }
-
    
-
     //Calling awake function
     private void Awake()
     {
@@ -40,15 +35,11 @@ public class PlayerController : MonoBehaviour
         rb2d = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    public void getKey()
-    {
-        Debug.Log("player Picked the Key");
-        scorecontroller.increaseScore(100);
-       
-    }
+  
 
-    // deteting collition
 
+    //---------------------Player Movement Detection----------------------------------------------------------------------------------------
+    //It is done through Update Function
     private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -61,26 +52,14 @@ public class PlayerController : MonoBehaviour
         RunAnim(horizontal);
         playhorizontal(horizontal, Vertical);
         JumpAnim(Vertical);
-        Crouch();
+        CrouchAnim();
         //box collieder changer
 
     }
+    //-------------------------------------------------------------------------------------------------------------------------------------
 
-    private void Crouch()
-    {
-        //crouching animation
-
-        if (Input.GetKey(KeyCode.LeftControl))
-        {
-            animator.SetBool("isCrouch", false);
-
-        }
-        else
-        {
-            animator.SetBool("isCrouch", true);
-        }
-    }
-
+    //-----------Run Animation-------------------------------------------------------------------------------------------------------------
+   
     private void RunAnim(float horizontal)
     {
         //move charector horizontally
@@ -93,11 +72,7 @@ public class PlayerController : MonoBehaviour
         {
             SceneManager.LoadScene(buildIndex);
         }
-
-
-
     }
-
 
     private void playhorizontal(float horizontal, float Vertical)
     {
@@ -115,13 +90,19 @@ public class PlayerController : MonoBehaviour
         transform.localScale = scale;
 
     }
+    //---------------------------------------------------------------------------------------------------------------------------------------
+    
+    //----------------Jump Animation---------------------------------------------------------------------------------------------------------
+    
     // Jump Animatuon
     private void JumpAnim(float Vertical)
     {
-        if (Vertical > 0 && onGround)
-        {
-            animator.SetBool("Jump", true);
-            Jump();
+       // if (Vertical > 0 && onGround)
+        if (Vertical > 0)
+
+            {
+                animator.SetBool("Jump", true);
+                Jump();
         }
         else
         {
@@ -129,17 +110,21 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+    
     void Jump()
     {
-        //rb2d.velocity = Vector2.up * jumpForce;
         onGround = false;
         rb2d.AddForce(new Vector2(0f, jump), ForceMode2D.Force);
+        
     }
 
-
+    //----------------------Challange- Infinate Jumping-------------------------------------------------------------------------------------
+    /*
+   
    
     //to compare ground while jumping
-    private void OnCollisionEnter2D(Collision2D collision)
+   
+   private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
@@ -156,6 +141,47 @@ public class PlayerController : MonoBehaviour
     }
 
 
+*/
+    //---------------------------------------------------------------------------------------------------------------------------------------
+
+    //------------------Crouch Animation-----------------------------------------------------------------------------------------------------
+    private void CrouchAnim()
+    {
+        //crouching animation
+
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            animator.SetBool("isCrouch", false);
+
+        }
+        else
+        {
+            animator.SetBool("isCrouch", true);
+        }
+    }
+    //----------------------------------------------------------------------------------------------------------------------------------------
+
+    //--------Collecting Keys-----------------------------------------------------------------------------------------------------------------
+    public void getKey()
+    {
+        Debug.Log("player Picked the Key");
+        scorecontroller.increaseScore(100);
+        keyCount.increasekeyCount(1);
+    }
+    // deteting collition
+
+    //----------------------------------------------------------------------------------------------------------------------------------------
+    //----Player Died while touching Enemy----------------------------------------------------------------------------------------------------
+    public void killPlayer()
+    {
+        Debug.Log("Player Killed By Enemy");
+        //Play Death animation
+        animator.SetBool("Death", true);
+        gameoverController.playerdied();
+
+        //animation events
+    }
+    //----------------------------------------------------------------------------------------------------------------------------------------
 
 
 }
