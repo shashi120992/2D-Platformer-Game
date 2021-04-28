@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Level
 {
@@ -29,6 +30,16 @@ namespace Assets.Scripts.Level
             {
                 SetLevelStatus(Level1, LevelStatus.Unlocked);
             }
+            else
+            {
+                Debug.LogError("this is error");
+            }
+        }
+
+        public void MarkLevelComplete()
+        {
+           //Set level Status Complete
+            levelManager.Instance.SetLevelStatus(SceneManager.GetActiveScene().name, LevelStatus.Complited);
         }
         public LevelStatus GetLevelStatus(string level) 
         {
@@ -39,6 +50,7 @@ namespace Assets.Scripts.Level
         public void SetLevelStatus(string level, LevelStatus levelStatus)
         {
             PlayerPrefs.SetInt(level, (int) levelStatus);
+            Debug.Log("Setting level: " + level + "Status: " + levelStatus);
         }
     }
 }

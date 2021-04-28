@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+
     // Player Killed by enemy
     private void OnCollisionEnter2D(Collision2D collision)
     {

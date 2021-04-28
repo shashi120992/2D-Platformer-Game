@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Level;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelOverController : MonoBehaviour
    
@@ -16,8 +18,10 @@ public class LevelOverController : MonoBehaviour
         //Level is Over
         if (collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            transform.position = startPosition;
+            //transform.position = startPosition;
             Debug.Log("game finish");
+            levelManager.Instance.MarkLevelComplete();
+            
         }
     }
 }

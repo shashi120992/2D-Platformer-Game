@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.Sounds;
 
 namespace Assets.Scripts.Level
 {
@@ -28,11 +29,14 @@ namespace Assets.Scripts.Level
                 break;
 
                 case LevelStatus.Unlocked:
+                    Sounds.SoundManager.Instance.Play(Sounds.buttonClick);
                     SceneManager.LoadScene(LevelName);
                     break;
 
                 case LevelStatus.Complited:
+                    SoundManager.Instance.Play(Sounds.ButtonClick);
                     SceneManager.LoadScene(LevelName);     // To Collect Extra Points
+                    
                     break;
             }
 
