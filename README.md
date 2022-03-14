@@ -7,4 +7,4 @@
   * dumb enemy
   * Intelligent enemy
   * smart enemy.
-* **Used a Level win conditions for each levels.*
+* **Used a Level win conditions for each levels.**
