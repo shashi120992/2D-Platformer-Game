@@ -16,6 +16,8 @@
 <img src="/Images/3.png" width="40%" height="40%"> &nbsp&nbsp
 <img src="/Images/4.png" width="40%" height="40%"> &nbsp&nbsp
 </p>
+
+
 ## Some of the used concepts
 * **Used Generic Singleton approach for overall game architecture**
 * **Used Animation technique different types of enemies like** 
